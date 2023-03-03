@@ -1,0 +1,25 @@
+<template>
+  <lightning-layout horizontal-align="spread">
+    <lightning-layout-item>
+      <lightning-button-icon
+        class="slds-p-left_x-small"
+        size="large"
+        icon-name="utility:back"
+        onclick={goBack}
+        title="back"
+      ></lightning-button-icon>
+    </lightning-layout-item>
+    <lightning-layout-item>
+      <lightning-button class="slds-p-right_x-small" label="Send from Case" icon-name="utility:email" onclick={handleEmailButton} disabled={deactivateEmailButton}></lightning-button>
+    </lightning-layout-item>
+  </lightning-layout>
+  <lightning-record-view-form
+    object-api-name="Knowledge__kav"
+    record-id={articleId}
+    onload={handleLoad}
+  >
+    <lightning-output-field field-name="Title"> </lightning-output-field>
+    <lightning-output-field field-name="Content__c"> </lightning-output-field>
+    <lightning-output-field field-name="KnowledgeArticleId"> </lightning-output-field>
+  </lightning-record-view-form>
+</template>

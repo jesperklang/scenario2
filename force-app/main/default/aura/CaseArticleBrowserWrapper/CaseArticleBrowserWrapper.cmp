@@ -1,0 +1,10 @@
+<aura:component
+  implements="force:hasRecordId,flexipage:availableForAllPageTypes"
+  access="global"
+>
+  <aura:attribute name="dataCategory" type="String" />
+  <c:caseArticleBrowser
+    recordId="{!v.recordId}"
+    knowledgeCategory="{!v.dataCategory}"
+  />
+</aura:component>

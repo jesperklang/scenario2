@@ -1,0 +1,24 @@
+.epidemicHeader {
+  font-family: 'Epidemic', sans-serif;
+  font-size: 22px;
+}
+
+.epidemicBody {
+  font-family: 'Epidemic', sans-serif;
+  font-size: 16px;
+}
+
+.epidemicBox {
+  background: rgb(0, 0, 0);
+  border-radius: var(--slds-c-card-radius-border, var(--sds-c-card-radius-border, var(--lwc-borderRadiusMedium,0.25rem)));
+  border-width: var(--slds-c-card-sizing-border, var(--sds-c-card-sizing-border, var(--lwc-borderWidthThin,1px)));
+  border-style: solid;
+  border-color: var(--slds-c-card-color-border, var(--sds-c-card-color-border, var(--slds-g-color-border-base-1, #D4D4D4)));
+  box-shadow: var(--slds-c-card-shadow, var(--sds-c-card-shadow,none));
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  margin: 3px;
+  color: white;
+}

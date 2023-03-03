@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataCategoryGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <dataCategory>
+        <dataCategory>
+            <label>Finding the right license</label>
+            <name>Finding_the_right_license</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Stay claim free</label>
+            <name>Stay_claim_free</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Payment and receipts</label>
+            <name>Payment_and_receipts</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Discover our music</label>
+            <name>Discover_our_music</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Managing my account</label>
+            <name>Managing_my_account</name>
+        </dataCategory>
+        <dataCategory>
+            <label>Managing the Epidemic Sound App</label>
+            <name>Managing_the_Epidemic_Sound_App</name>
+        </dataCategory>
+        <label>All</label>
+        <name>All</name>
+    </dataCategory>
+    <label>Category</label>
+    <objectUsage>
+        <object>KnowledgeArticleVersion</object>
+    </objectUsage>
+</DataCategoryGroup>

@@ -1,0 +1,3 @@
+<design:component >
+  <design:attribute name="dataCategory" datasource="apex://KnowledgeCategoryPicker" label="Data Category" description="Select the Data Category which the component will group the articles by." required="true"/>
+</design:component>
