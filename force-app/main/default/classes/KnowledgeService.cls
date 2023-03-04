@@ -1,6 +1,7 @@
 public with sharing class KnowledgeService {
-  public static String getDataCategoryStructure(String dataCategoryGroupName) {
-    DataCategory[] toReturn;
+  public static DataCategory[] getDataCategoryStructure(
+    String dataCategoryGroupName
+  ) {
     //Creating a list of pair objects to use as a parameter for the describe call
     List<DataCategoryGroupSobjectTypePair> pairs = new List<DataCategoryGroupSobjectTypePair>();
     DataCategoryGroupSobjectTypePair p = new DataCategoryGroupSobjectTypePair();
@@ -14,8 +15,9 @@ public with sharing class KnowledgeService {
     );
 
     //Getting data from the result
-    toReturn = describeCategoryStructureResult[0].getTopCategories();
-    return JSON.serialize(toReturn[0].childcategories);
+    DataCategory[] toReturn = describeCategoryStructureResult[0]
+      .getTopCategories();
+    return toReturn[0].childcategories;
   }
 
   public static List<KnowledgeArticleVersion> getArticles(
