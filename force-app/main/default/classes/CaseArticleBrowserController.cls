@@ -2,7 +2,10 @@ public with sharing class CaseArticleBrowserController {
   @AuraEnabled(cacheable=true)
   public static String getDataCategoryStructure(String dataCategoryGroupName) {
     try {
-      return KnowledgeService.getDataCategoryStructure(dataCategoryGroupName);
+      DataCategory[] response = KnowledgeService.getDataCategoryStructure(
+        dataCategoryGroupName
+      );
+      return JSON.serialize(response);
     } catch (Exception e) {
       throw new AuraHandledException(e.getMessage());
     }
@@ -28,7 +31,7 @@ public with sharing class CaseArticleBrowserController {
     Id caseId,
     String dataCategoryGroupName
   ) {
-    if (caseId.getSobjectType() != Schema.Case.SObjectType) {
+    if (caseId == null || caseId.getSobjectType() != Schema.Case.SObjectType) {
       return null;
     }
     try {

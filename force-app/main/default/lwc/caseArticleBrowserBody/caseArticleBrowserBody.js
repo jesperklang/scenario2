@@ -83,6 +83,10 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
   }
 
   get deactivateEmailButton() {
-    return !this.recordId.startsWith("500");
+    return (
+      this.recordId === null ||
+      this.recordId === undefined ||
+      !this.recordId.startsWith("500")
+    );
   }
 }

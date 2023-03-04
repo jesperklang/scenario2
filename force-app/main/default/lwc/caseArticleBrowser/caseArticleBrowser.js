@@ -174,7 +174,11 @@ export default class CaseArticleBrowser extends LightningElement {
   }
 
   get isCase() {
-    return this.recordId.startsWith("500");
+    return (
+      this.recordId !== null &&
+      this.recordId !== undefined &&
+      this.recordId.startsWith("500")
+    );
   }
 
   get showSuggestedArticles() {
