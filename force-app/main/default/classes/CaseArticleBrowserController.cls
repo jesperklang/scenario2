@@ -23,13 +23,40 @@ public with sharing class CaseArticleBrowserController {
     }
   }
 
-  @AuraEnabled(cacheable=false)
-  public static List<KnowledgeArticleVersion> getCaseSuggestionData(
+  @AuraEnabled(cacheable=true)
+  public static List<KnowledgeArticleVersion> getCaseSuggestions(
+    Id caseId,
+    String dataCategoryGroupName
+  ) {
+    if (caseId.getSobjectType() != Schema.Case.SObjectType) {
+      return null;
+    }
+    try {
+      String caseSubject = [SELECT Subject FROM Case WHERE Id = :caseId LIMIT 1]
+      .Subject;
+      return KnowledgeService.searchForArticles(
+        caseSubject,
+        dataCategoryGroupName,
+        'All',
+        5
+      );
+    } catch (Exception e) {
+      throw new AuraHandledException(e.getMessage());
+    }
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static List<KnowledgeArticleVersion> getSearchResults(
+    String searchTerm,
     String dataCategoryGroupName
   ) {
     try {
-      System.debug(dataCategoryGroupName);
-      return KnowledgeService.getCaseSuggestionData(dataCategoryGroupName);
+      return KnowledgeService.searchForArticles(
+        searchTerm,
+        dataCategoryGroupName,
+        'All',
+        9999
+      );
     } catch (Exception e) {
       throw new AuraHandledException(e.getMessage());
     }

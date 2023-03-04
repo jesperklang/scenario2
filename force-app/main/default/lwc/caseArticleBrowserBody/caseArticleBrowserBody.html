@@ -10,7 +10,21 @@
       ></lightning-button-icon>
     </lightning-layout-item>
     <lightning-layout-item>
-      <lightning-button class="slds-p-right_x-small" label="Send from Case" icon-name="utility:email" onclick={handleEmailButton} disabled={deactivateEmailButton}></lightning-button>
+      <lightning-button-group>
+        <lightning-button
+          label="This helped the Case"
+          icon-name="custom:custom1"
+          onclick={attachArticleToCase}
+          disabled={deactivateEmailButton}
+        ></lightning-button>
+        <lightning-button
+          class="slds-p-right_x-small"
+          label="Email"
+          icon-name="utility:email"
+          onclick={handleEmailButton}
+          disabled={deactivateEmailButton}
+        ></lightning-button>
+      </lightning-button-group>
     </lightning-layout-item>
   </lightning-layout>
   <lightning-record-view-form
@@ -20,6 +34,7 @@
   >
     <lightning-output-field field-name="Title"> </lightning-output-field>
     <lightning-output-field field-name="Content__c"> </lightning-output-field>
-    <lightning-output-field field-name="KnowledgeArticleId"> </lightning-output-field>
+    <lightning-output-field field-name="KnowledgeArticleId">
+    </lightning-output-field>
   </lightning-record-view-form>
 </template>

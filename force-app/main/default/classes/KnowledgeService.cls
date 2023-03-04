@@ -38,20 +38,33 @@ public with sharing class KnowledgeService {
     }
   }
 
-  public static List<KnowledgeArticleVersion> getCaseSuggestionData(
-    String dataCategoryGroupName
+  public static List<KnowledgeArticleVersion> searchForArticles(
+    String query,
+    String dataCategoryGroup,
+    String dataCategory,
+    Integer recordLimit
   ) {
-    if (!Schema.sObjectType.KnowledgeArticleVersion.isAccessible()) {
-      SecurityException e = new SecurityException();
-      e.setMessage('You do not have read access to Knowledge Articles');
-      throw e;
-    } else {
-      String queryString =
-        'SELECT Title, LastPublishedDate, ArticleCaseAttachCount FROM KnowledgeArticleVersion WHERE PublishStatus=\'online\' WITH DATA CATEGORY ' +
-        dataCategoryGroupName +
-        '__c ABOVE_OR_BELOW All__c';
-      List<KnowledgeArticleVersion> articles = Database.query(queryString);
-      return articles;
+    Search.KnowledgeSuggestionFilter filters = new Search.KnowledgeSuggestionFilter();
+    filters.setLanguage('en_US');
+    filters.setPublishStatus('Online');
+    filters.addDataCategory(dataCategoryGroup, dataCategory);
+
+    Search.SuggestionOption options = new Search.SuggestionOption();
+    options.setFilter(filters);
+    options.setLimit(recordLimit);
+
+    Search.SuggestionResults suggestionResults = Search.suggest(
+      query,
+      'KnowledgeArticleVersion',
+      options
+    );
+    List<KnowledgeArticleVersion> articles = new List<KnowledgeArticleVersion>();
+    for (
+      Search.SuggestionResult searchResult : suggestionResults.getSuggestionResults()
+    ) {
+      KnowledgeArticleVersion article = (KnowledgeArticleVersion) searchResult.getSObject();
+      articles.add(article);
     }
+    return articles;
   }
 }

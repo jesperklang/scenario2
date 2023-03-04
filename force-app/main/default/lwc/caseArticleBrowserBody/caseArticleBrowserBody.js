@@ -1,4 +1,5 @@
 import { LightningElement, api } from "lwc";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { createRecord } from "lightning/uiRecordApi";
 import { NavigationMixin } from "lightning/navigation";
 import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
@@ -9,9 +10,9 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
   @api recordId;
   @api articleId;
   articleInfo = {
-    title: "",
-    body: "",
-    articleId: ""
+    title: undefined,
+    body: undefined,
+    article: undefined
   };
 
   goBack() {
@@ -19,12 +20,16 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
   }
 
   handleLoad(event) {
-    this.articleInfo.title =
-      event.detail.records[this.articleId].fields.Title.value;
-    this.articleInfo.body =
-      event.detail.records[this.articleId].fields.Content__c.value;
-    //this.articleInfo.articleId =
-      //event.detail.records[this.articleId].fields.KnowledgeArticleId.value;
+    try {
+      this.articleInfo.title =
+        event.detail.records[this.articleId].fields.Title.value;
+      this.articleInfo.body =
+        event.detail.records[this.articleId].fields.Content__c.value;
+      this.articleInfo.article =
+        event.detail.records[this.articleId].fields.KnowledgeArticleId.value;
+    } catch {
+      console.log("");
+    }
   }
 
   handleEmailButton() {
@@ -42,21 +47,37 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
       }
     };
     this[NavigationMixin.Navigate](pageRef);
-    this.attachArticleToCase();
   }
 
-  attachArticleToCase() {
+  async attachArticleToCase() {
     const record = {
       apiName: "CaseArticle",
       fields: {
         CaseId: this.recordId,
-        KnowledgeArticleVersionId: this.articleId
+        KnowledgeArticleId: this.articleInfo.article
       }
     };
-    console.log(record);
     try {
-      createRecord(record);
+      await createRecord(record);
+      const event = new ShowToastEvent({
+        title: "Success!",
+        message: "Thanks for showing the article some love! ❤️",
+        variant: "success"
+      });
+      this.dispatchEvent(event);
     } catch (error) {
+      let errorMessage = "Unknown error";
+      if (Array.isArray(error.body)) {
+        errorMessage = error.body.map((e) => e.message).join(", ");
+      } else if (typeof error.body.message === "string") {
+        errorMessage = error.body.message;
+      }
+      const event = new ShowToastEvent({
+        title: "Something happened!",
+        message: errorMessage,
+        variant: "error"
+      });
+      this.dispatchEvent(event);
       console.log(error);
     }
   }

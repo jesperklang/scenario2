@@ -1,32 +1,47 @@
 <template>
-  <lightning-layout multiple-rows="true">
+  <lightning-layout multiple-rows="true" vertical-align="center">
     <!-- Header with search bar -->
-    <lightning-layout-item size="3" padding="around-small">
-      <div style="height: 30px">
-        <svg
-          width="30"
-          height="40"
-          viewBox="0 0 60 80"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            id="logo"
-            d="M 13.4784 13.7388 C -4.46584 32.0315 -4.49255 61.6727 13.397 80 L 41.2883 79.9999 L 27.424 65.8663 C 17.1551 55.3975 17.1554 38.4242 27.4249 27.9555 C 37.6945  17.4868 54.3452 17.4868 64.6154 27.9555 V 3.98743 C 47.7398 -3.60461 27.3049 -0.355827 13.4784 13.7388 Z M 64.6147 27.9553 V 60.7205 H 32.473 L 64.6147 27.9553 Z"
-            fill="#000"
-          />
-        </svg>
-        <span class="epidemicBody"> / Help</span>
-      </div>
+    <lightning-layout-item size="1" padding="around-small">
+      <svg
+        width="30"
+        height="40"
+        viewBox="0 0 60 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          id="logo"
+          d="M 13.4784 13.7388 C -4.46584 32.0315 -4.49255 61.6727 13.397 80 L 41.2883 79.9999 L 27.424 65.8663 C 17.1551 55.3975 17.1554 38.4242 27.4249 27.9555 C 37.6945  17.4868 54.3452 17.4868 64.6154 27.9555 V 3.98743 C 47.7398 -3.60461 27.3049 -0.355827 13.4784 13.7388 Z M 64.6147 27.9553 V 60.7205 H 32.473 L 64.6147 27.9553 Z"
+          fill="#000"
+        />
+      </svg>
     </lightning-layout-item>
-    <lightning-layout-item size="9" padding="around-small">
+    <lightning-layout-item size="2" class="slds-align_absolute-center">
+      <div class="epidemicBody">/ Help</div>
+    </lightning-layout-item>
+    <lightning-layout-item size="9" padding="horizontal-small">
+      <div onkeyup={handleKeyUp}>
+        <lightning-input
+          name="enter-search"
+          label="Search by hitting the 'enter' key"
+          type="search"
+          min-length="3"
+          placeholder="Search"
+          is-loading={searching}
+          message-when-too-short="Please enter at least 3 characters"
+          onchange={handleSearchInput}
+          variant="label-hidden"
+        ></lightning-input>
+      </div>
     </lightning-layout-item>
     <lightning-layout-item size="12">
       <template if:true={showSuggestedArticles}>
         <!-- Has suggested articles  -->
-        <span class="epidemicBody slds-p-left_small slds-p-top_xx-small">Suggested Articles</span>
+        <span class="epidemicBody slds-p-left_small slds-p-top_xx-small"
+          >Suggested Articles</span
+        >
         <template for:each={suggestedArticles} for:item="article">
           <div key={article.Id} class="slds-section">
             <h3 class="slds-section__title">
@@ -42,22 +57,20 @@
                   icon-name="utility:play"
                   size="x-small"
                 ></lightning-icon>
-                <span class="slds-truncate epidemicBody" title={article.Title}>
-                  {article.Title}</span
+                <div
+                  data-article-id={article.Id}
+                  class="epidemicBody slds-truncate"
+                  title={article.Title}
                 >
-                <lightning-icon
-                  class="slds-p-left_x-small slds-p-right_xxx-small"
-                  icon-name="utility:case"
-                  size="xx-small"
-                ></lightning-icon>
-                <span class="slds-text-body_small"
-                  >{article.ArticleCaseAttachCount}</span
-                >
+                  {article.Title}
+                </div>
               </button>
             </h3>
           </div>
         </template>
-        <span class="epidemicBody slds-p-left_small slds-p-top_xx-small">Browse all</span>
+        <div class="epidemicBody slds-p-left_small slds-p-top_xx-small">
+          Browse all
+        </div>
       </template>
     </lightning-layout-item>
   </lightning-layout>
@@ -74,16 +87,68 @@
       onback={clearSelectedArticle}
     ></c-case-article-browser-body>
   </template>
+  <template lwc:elseif={hasSearchTerm}>
+    <!-- Search term is entered -->
+    <lightning-layout>
+      <lightning-layout-item>
+        <lightning-button-icon
+          class="slds-var-p-left_x-small"
+          size="large"
+          icon-name="utility:back"
+          onclick={clearSearchTerm}
+          title="back"
+        ></lightning-button-icon>
+      </lightning-layout-item>
+      <lightning-layout-item>
+        <div class="epidemicBody slds-var-p-left_small slds-var-p-top_xx-small">
+          Search results for "{searchTerm}"
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
+    <template for:each={searchResults} for:item="article">
+      <div key={article.Id} class="slds-section">
+        <h3 class="slds-section__title">
+          <button
+            class="slds-button slds-section__title-action"
+            data-article={article.Id}
+            onclick={handleArticleClick}
+          >
+            <lightning-icon
+              class="slds-var-p-right_x-small"
+              icon-name="utility:play"
+              size="x-small"
+            ></lightning-icon>
+            <span class="slds-truncate epidemicBody" title={article.Title}>
+              {article.Title}
+            </span>
+          </button>
+        </h3>
+      </div>
+    </template>
+    <template if:false={hasSearchResults}>
+      <div class="epidemicBody slds-p-left_small slds-p-top_small">
+        No results found
+      </div>
+    </template>
+  </template>
   <template lwc:elseif={categoryIsSelected}>
     <!-- Category is selected -->
-    <lightning-button-icon
-      class="slds-p-left_x-small"
-      size="large"
-      icon-name="utility:back"
-      onclick={clearCategorySelection}
-      title="back"
-    ></lightning-button-icon>
-
+    <lightning-layout vertical-align="center">
+      <lightning-layout-item>
+        <lightning-button-icon
+          class="slds-var-p-left_x-small"
+          size="large"
+          icon-name="utility:back"
+          onclick={clearCategorySelection}
+          title="back"
+        ></lightning-button-icon>
+      </lightning-layout-item>
+      <lightning-layout-item>
+        <div class="epidemicBody slds-var-p-left_small slds-var-p-top_xx-small">
+          {selectedCategoryLabel}
+        </div>
+      </lightning-layout-item>
+    </lightning-layout>
     <template for:each={articles} for:item="article">
       <div key={article.Id} class="slds-section">
         <h3 class="slds-section__title">
@@ -95,7 +160,7 @@
             onclick={handleArticleClick}
           >
             <lightning-icon
-              class="slds-p-right_x-small"
+              class="slds-var-p-right_x-small"
               icon-name="utility:play"
               size="x-small"
             ></lightning-icon>
@@ -103,8 +168,8 @@
               {article.Title}</span
             >
             <lightning-icon
-              class="slds-p-left_x-small slds-p-right_xxx-small"
-              icon-name="utility:case"
+              class="slds-var-m-left_x-small slds-var-m-right_xxx-small"
+              icon-name="custom:custom1"
               size="xx-small"
             ></lightning-icon>
             <span class="slds-text-body_small"
@@ -122,6 +187,7 @@
         key={category.name}
         class="epidemicHeader epidemicBox"
         data-category={category.name}
+        data-label={category.label}
         onclick={handleCategoryClick}
       >
         {category.label}
