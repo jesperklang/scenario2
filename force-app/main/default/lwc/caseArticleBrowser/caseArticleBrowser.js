@@ -29,7 +29,7 @@ export default class CaseArticleBrowser extends LightningElement {
   async getInitialDataStructure({ error, data }) {
     this.loading = true;
     if (data) {
-      this.dataCategories = JSON.parse(data);
+      this.dataCategories = data;
     } else if (error) {
       let errorMessage = "Unknown error";
       if (Array.isArray(error.body)) {

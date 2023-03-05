@@ -1,11 +1,27 @@
 public with sharing class CaseArticleBrowserController {
+  public class DataCategoryGroup {
+    @AuraEnabled
+    public String name;
+    @AuraEnabled
+    public String label;
+  }
+
   @AuraEnabled(cacheable=true)
-  public static String getDataCategoryStructure(String dataCategoryGroupName) {
+  public static List<DataCategoryGroup> getDataCategoryStructure(
+    String dataCategoryGroupName
+  ) {
     try {
+      List<DataCategoryGroup> categoryGroupsToReturn = new List<DataCategoryGroup>();
       DataCategory[] response = KnowledgeService.getDataCategoryStructure(
         dataCategoryGroupName
       );
-      return JSON.serialize(response);
+      for (DataCategory dataCategory : response) {
+        DataCategoryGroup dataCategoryGroup = new DataCategoryGroup();
+        dataCategoryGroup.name = dataCategory.name;
+        dataCategoryGroup.label = dataCategory.label;
+        categoryGroupsToReturn.add(dataCategoryGroup);
+      }
+      return categoryGroupsToReturn;
     } catch (Exception e) {
       throw new AuraHandledException(e.getMessage());
     }
