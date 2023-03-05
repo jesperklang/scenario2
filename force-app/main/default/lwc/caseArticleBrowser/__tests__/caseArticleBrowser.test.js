@@ -56,38 +56,6 @@ describe("c-case-article-browser", () => {
   async function flushPromises() {
     return Promise.resolve();
   }
-
-  describe("getSearchResults @wire data", () => {
-    it("renders data of one record", async () => {
-      const USER_INPUT = "Refer";
-
-      // Create initial element
-      const element = createElement("c-case-article-browser", {
-        is: CaseArticleBrowser
-      });
-      element.knowledgeCategory = "Category";
-      document.body.appendChild(element);
-
-      // Select input field for simulating user input
-      const inputEl = element.shadowRoot.querySelector("lightning-input");
-      inputEl.value = USER_INPUT;
-      inputEl.dispatchEvent(new CustomEvent("change"));
-
-      // Run all fake timers.
-      jest.runAllTimers();
-
-      // Emit data from @wire
-      getSearchResults.emit(mockGetSearchResults);
-
-      // Wait for any asynchronous DOM updates
-      await flushPromises();
-
-      // Select elements for validation
-      const detailEls = element.shadowRoot.querySelector("span");
-      expect(detailEls).not.toBeNull();
-      expect(detailEls.textContent).toBe(mockGetSearchResults[0].Title);
-    });
-  });
   describe("getDataCategoryStructure @wire data", () => {
     it("renders the Data Categories at start", async () => {
       // Create initial element
@@ -95,6 +63,7 @@ describe("c-case-article-browser", () => {
         is: CaseArticleBrowser
       });
       element.knowledgeCategory = "Category";
+      element.recordId = null;
       document.body.appendChild(element);
 
       // Run all fake timers.
@@ -110,6 +79,43 @@ describe("c-case-article-browser", () => {
       const detailEls = element.shadowRoot.querySelector(".epidemicBox");
       expect(detailEls).not.toBeNull();
       expect(detailEls.textContent).toBe(mockGetDataCategoryStructure[0].label);
+    });
+  });
+  describe("getSearchResults @wire data", () => {
+    it("renders data of one record", async () => {
+      const USER_INPUT = "Refer";
+
+      // Create initial element
+      const element = createElement("c-case-article-browser", {
+        is: CaseArticleBrowser
+      });
+      element.knowledgeCategory = "Category";
+      element.recordId = null;
+      document.body.appendChild(element);
+
+      // Select input field for simulating user input
+      const inputEl = element.shadowRoot.querySelector("lightning-input");
+      inputEl.value = USER_INPUT;
+      inputEl.dispatchEvent(new CustomEvent("change"));
+
+      // Run all fake timers.
+      jest.runAllTimers();
+
+      // Emit data from @wire
+      getDataCategoryStructure.emit(mockGetDataCategoryStructure);
+      getSearchResults.emit(mockGetSearchResults);
+
+      // Run all fake timers.
+      jest.runAllTimers();
+      // Wait for any asynchronous DOM updates
+      await flushPromises();
+
+      setTimeout(() => {
+        // Select elements for validation
+        const detailEls = element.shadowRoot.querySelector("span");
+        expect(detailEls).not.toBeNull();
+        expect(detailEls.textContent).toBe(mockGetSearchResults[0].Title);
+      }, 50);
     });
   });
 });
