@@ -24,20 +24,14 @@ public with sharing class KnowledgeService {
     String dataCategoryGroupName,
     String dataCategoryName
   ) {
-    if (!Schema.sObjectType.KnowledgeArticleVersion.isAccessible()) {
-      SecurityException e = new SecurityException();
-      e.setMessage('You do not have read access to Knowledge Articles');
-      throw e;
-    } else {
-      String queryString =
-        'SELECT Title, LastPublishedDate, ArticleCaseAttachCount FROM KnowledgeArticleVersion WHERE PublishStatus=\'online\' WITH DATA CATEGORY ' +
-        dataCategoryGroupName +
-        '__c BELOW ' +
-        dataCategoryName +
-        '__c';
-      List<KnowledgeArticleVersion> articles = Database.query(queryString);
-      return articles;
-    }
+    String queryString =
+      'SELECT Title, LastPublishedDate, ArticleCaseAttachCount FROM KnowledgeArticleVersion WHERE PublishStatus=\'online\' WITH DATA CATEGORY ' +
+      dataCategoryGroupName +
+      '__c BELOW ' +
+      dataCategoryName +
+      '__c';
+    List<KnowledgeArticleVersion> articles = Database.query(queryString);
+    return articles;
   }
 
   public static List<KnowledgeArticleVersion> searchForArticles(
