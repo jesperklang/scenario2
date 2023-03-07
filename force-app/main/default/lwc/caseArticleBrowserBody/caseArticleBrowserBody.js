@@ -33,6 +33,7 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
   }
 
   handleEmailButton() {
+    const body = `<p></p> ${this.articleInfo.body}`;
     const pageRef = {
       type: "standard__quickAction",
       attributes: {
@@ -41,7 +42,7 @@ export default class CaseArticleBrowserBody extends NavigationMixin(
       state: {
         recordId: this.recordId,
         defaultFieldValues: encodeDefaultFieldValues({
-          HtmlBody: this.articleInfo.body,
+          HtmlBody: body,
           Subject: this.articleInfo.title
         })
       }
