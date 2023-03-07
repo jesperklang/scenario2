@@ -81,7 +81,11 @@ export default class CaseArticleBrowser extends LightningElement {
         dataCategoryGroupName: this.knowledgeCategory,
         dataCategoryName: this.selectedCategoryName
       });
-      this.articles = data;
+      let tempData = JSON.parse(JSON.stringify(data));
+      tempData.sort((a, b) => {
+        return b.ArticleCaseAttachCount - a.ArticleCaseAttachCount;
+      });
+      this.articles = tempData;
     } catch (error) {
       let errorMessage = "Unknown error";
       if (Array.isArray(error.body)) {
