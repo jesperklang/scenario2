@@ -1,10 +1,10 @@
 @isTest
 public with sharing class CaseArticleBrowserControllerTest {
   @TestSetup
-  static void makeData() {
+  public static void setupData() {
     Knowledge__kav kav = new Knowledge__kav();
-    kav.UrlName = 'test-url';
-    kav.Title = 'Test akv';
+    kav.UrlName = 'hejsan';
+    kav.Title = 'Hejsan';
     kav.Language = 'en_US';
     insert kav;
 
@@ -27,16 +27,11 @@ public with sharing class CaseArticleBrowserControllerTest {
   @isTest
   public static void testGetDataCategoryStructure() {
     Test.startTest();
-    String stringResponse = CaseArticleBrowserController.getDataCategoryStructure(
+    List<CaseArticleBrowserController.DataCategoryGroup> response = CaseArticleBrowserController.getDataCategoryStructure(
       'Category'
     );
-    List<DataCategory> response = KnowledgeService.getDataCategoryStructure(
-      'Category'
-    );
-    String serializedResponse = JSON.serialize(response);
     Test.stopTest();
     Assert.isTrue(response.size() > 0, 'No categories found');
-    Assert.areEqual(stringResponse, serializedResponse);
   }
 
   @isTest
@@ -44,7 +39,7 @@ public with sharing class CaseArticleBrowserControllerTest {
     String exceptionType;
     Test.startTest();
     try {
-      String stringResponse = CaseArticleBrowserController.getDataCategoryStructure(
+      List<CaseArticleBrowserController.DataCategoryGroup> response = CaseArticleBrowserController.getDataCategoryStructure(
         'WrongCategory'
       );
     } catch (Exception e) {
@@ -94,7 +89,7 @@ public with sharing class CaseArticleBrowserControllerTest {
   public static void testGetCaseSuggestionsPositive() {
     Case c = new Case(
       Origin = 'Phone',
-      Subject = 'test',
+      Subject = 'hejsan',
       Language__c = 'en',
       Customer_Type__c = 'Free'
     );
@@ -154,10 +149,11 @@ public with sharing class CaseArticleBrowserControllerTest {
   public static void testGetSearchResultsPositive() {
     Test.startTest();
     List<KnowledgeArticleVersion> response = CaseArticleBrowserController.getSearchResults(
-      'test',
+      'Hejsan',
       'Category'
     );
     Test.stopTest();
+    System.debug(response);
     Assert.isTrue(response.size() > 0, 'No articles found');
   }
 

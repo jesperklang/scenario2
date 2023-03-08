@@ -40,27 +40,17 @@ public with sharing class KnowledgeService {
     String dataCategory,
     Integer recordLimit
   ) {
-    Search.KnowledgeSuggestionFilter filters = new Search.KnowledgeSuggestionFilter();
-    filters.setLanguage('en_US');
-    filters.setPublishStatus('Online');
-    filters.addDataCategory(dataCategoryGroup, dataCategory);
-
-    Search.SuggestionOption options = new Search.SuggestionOption();
-    options.setFilter(filters);
-    options.setLimit(recordLimit);
-
-    Search.SuggestionResults suggestionResults = Search.suggest(
-      query,
-      'KnowledgeArticleVersion',
-      options
-    );
-    List<KnowledgeArticleVersion> articles = new List<KnowledgeArticleVersion>();
-    for (
-      Search.SuggestionResult searchResult : suggestionResults.getSuggestionResults()
-    ) {
-      KnowledgeArticleVersion article = (KnowledgeArticleVersion) searchResult.getSObject();
-      articles.add(article);
-    }
+    String queryString =
+      'SELECT Title, LastPublishedDate, ArticleCaseAttachCount FROM KnowledgeArticleVersion WHERE PublishStatus=\'online\' AND Title LIKE \'%' +
+      query +
+      '%\' WITH DATA CATEGORY ' +
+      dataCategoryGroup +
+      '__c BELOW ' +
+      dataCategory +
+      '__c LIMIT ' +
+      recordLimit;
+    List<KnowledgeArticleVersion> articles = Database.query(queryString);
     return articles;
+    //TODO: Query the Promoted Search Terms on articles
   }
 }

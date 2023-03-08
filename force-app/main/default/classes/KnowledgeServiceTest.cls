@@ -2,26 +2,29 @@
 public with sharing class KnowledgeServiceTest {
   @TestSetup
   static void makeData() {
-    Knowledge__kav kav = new Knowledge__kav();
-    kav.UrlName = 'test-url';
-    kav.Title = 'Test akv';
-    kav.Language = 'en_US';
+    Knowledge__kav kav = new Knowledge__kav(
+      UrlName = 'test-url',
+      Title = 'Test Url',
+      Language = 'en_US'
+    );
     insert kav;
 
-    Id kaId = [
+    Knowledge__kav kavWithArticleId = [
       SELECT KnowledgeArticleId
       FROM Knowledge__kav
       WHERE id = :kav.id
-    ]
-    .KnowledgeArticleId;
+    ];
 
     Knowledge__DataCategorySelection tempCat = new Knowledge__DataCategorySelection();
-    tempCat.DataCategoryGroupName = 'Category'; // key line
-    tempCat.DataCategoryName = 'Finding_the_right_license'; //m.Category_Path__c;
+    tempCat.DataCategoryGroupName = 'Category';
+    tempCat.DataCategoryName = 'Finding_the_right_license';
     tempCat.ParentId = kav.Id;
     insert tempCat;
 
-    KbManagement.PublishingService.publishArticle(kaId, true);
+    KbManagement.PublishingService.publishArticle(
+      kavWithArticleId.KnowledgeArticleId,
+      true
+    );
   }
 
   @isTest
@@ -53,7 +56,7 @@ public with sharing class KnowledgeServiceTest {
   public static void testSearchForArticlesPositive() {
     Test.startTest();
     List<KnowledgeArticleVersion> response = KnowledgeService.searchForArticles(
-      'test',
+      'Test',
       'Category',
       'Finding_the_right_license',
       1
